@@ -1,5 +1,7 @@
 import { InvalidEntryError } from "../errors/invalid-entry-error"
 import { InvalidSpotError } from "../errors/invalid-spot-error"
+import { EntrySpotValidator } from "../validators/entry-spot-validator"
+import { EntryValueValidator } from "../validators/entry-value-validator"
 
 type boardInput = {
     value: number
@@ -7,19 +9,26 @@ type boardInput = {
 }
 
 export class Board {
+    private entryValidator: EntryValueValidator
+    private spotValidator: EntrySpotValidator
+
+    constructor(
+        entryValidator: EntryValueValidator,
+        spotValidator: EntrySpotValidator
+    ) {
+        this.entryValidator = entryValidator
+        this.spotValidator = spotValidator
+    }
+
     move = ( input: boardInput ): void => {
         const { value } = input
         const { spot } = input
 
-        if (value < 1 || value > 9) {
+        if (!this.entryValidator.validate(value)) {
             throw new InvalidEntryError()
         }
 
-        if (spot[0] < 0 || spot[0] > 8 ) {
-            throw new InvalidSpotError()
-        }
-
-        if (spot[1] < 0 || spot[1] > 8 ) {
+        if ( !this.spotValidator.validate(spot) ) {
             throw new InvalidSpotError()
         }
     }
