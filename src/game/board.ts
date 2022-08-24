@@ -9,7 +9,7 @@ export class Board {
     move = ( input: boardInput ): void => {
         const { value } = input
 
-        if (value < 1) {
+        if (value < 1 || value > 9) {
             throw new InvalidEntryError()
         }
     }
