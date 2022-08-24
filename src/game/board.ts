@@ -1,12 +1,8 @@
 import { InvalidEntryError } from "../errors/invalid-entry-error"
 import { InvalidSpotError } from "../errors/invalid-spot-error"
+import { boardInputModel } from "../models/game-input-model"
 import { EntrySpotValidator } from "../validators/entry-spot-validator"
 import { EntryValueValidator } from "../validators/entry-value-validator"
-
-type boardInput = {
-    value: number
-    spot: number[]
-}
 
 export class Board {
     private entryValidator: EntryValueValidator
@@ -20,7 +16,7 @@ export class Board {
         this.spotValidator = spotValidator
     }
 
-    move = ( input: boardInput ): void => {
+    move = ( input: boardInputModel ): void => {
         const { value } = input
         const { spot } = input
 

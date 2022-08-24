@@ -1,4 +1,6 @@
-export class EntrySpotValidator {
+import { Validator } from "../interfaces/validator-interface"
+
+export class EntrySpotValidator implements Validator {
     validate(values: number[]): boolean {
         if (values.length !== 2) {
             return false
