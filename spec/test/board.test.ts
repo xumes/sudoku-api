@@ -30,4 +30,18 @@ describe('Board', () => {
         
         expect(() => board.move(input)).toThrow(new InvalidSpotError)
     })
+
+    it('Should throws InvalidSpotError when second number in the position is lower than zero', () => {
+        const input = { value: 2, spot: [1, -1] }
+        const board = new Board()
+        
+        expect(() => board.move(input)).toThrow(new InvalidSpotError)
+    })
+
+    it('Should throws InvalidSpotError when second number in the position is higher than 8', () => {
+        const input = { value: 2, spot: [1, 9] }
+        const board = new Board()
+        
+        expect(() => board.move(input)).toThrow(new InvalidSpotError)
+    })
  })
