@@ -15,7 +15,7 @@ export class Board {
             throw new InvalidEntryError()
         }
 
-        if (spot[0] < 0 ) {
+        if (spot[0] < 0 || spot[0] > 0 ) {
             throw new InvalidSpotError()
         }
     }
