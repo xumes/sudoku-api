@@ -65,4 +65,18 @@ describe('Board', () => {
         
         expect(() => sut.move(input)).toThrow(new InvalidSpotError)
     })
+
+    it.only('Should throws InvalidSpotError when position has only one value', () => {
+        const { sut } = makeSUT()
+        const input = getFakeInput(2, [1])
+        
+        expect(() => sut.move(input)).toThrow(new InvalidSpotError)
+    })
+
+    it.only('Should throws InvalidSpotError when position has more than 2 values', () => {
+        const { sut } = makeSUT()
+        const input = getFakeInput(2, [1, 2, 3])
+        
+        expect(() => sut.move(input)).toThrow(new InvalidSpotError)
+    })
  })
