@@ -51,8 +51,11 @@ export class Board {
         }
     }
 
-    get = (): number[][] => {
-        return this.playerBoard
+    get = (): CurrentBoardModel => {
+        return {
+            winner: this.boardChecker.hasWinner(this.playerBoard),
+            board: this.playerBoard
+        }
     }
 
     private resetPlayerBoard = (): number[][] => {
