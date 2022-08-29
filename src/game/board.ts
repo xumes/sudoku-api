@@ -31,10 +31,8 @@ export class Board {
             throw new InvalidSpotError()
         }
 
-        for (let index = 0; index < this.playerBoard.length; index++) {
-            if (this.playerBoard[index].includes(value)) {
-                throw new DuplicatedValueError()
-            }
+        if (this.playerBoard[spot[0]].includes(value)) {
+            throw new DuplicatedValueError()
         }
 
         this.playerBoard[spot[0]][spot[1]] = value
