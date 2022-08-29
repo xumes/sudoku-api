@@ -31,8 +31,16 @@ export class Board {
             throw new InvalidSpotError()
         }
 
+        // check for duplicated value in the input row
         if (this.playerBoard[spot[0]].includes(value)) {
             throw new DuplicatedValueError()
+        }
+
+        //check for duplicated value on the input column
+        for (let index=0; index < this.playerBoard.length; index++) {
+            if (this.playerBoard[index][spot[1]] === value ) {
+                throw new DuplicatedValueError()
+            }
         }
 
         this.playerBoard[spot[0]][spot[1]] = value
