@@ -162,7 +162,7 @@ describe('Board', () => {
 
             const currentBoard = board.get()
 
-            expect(currentBoard).toEqual([
+            expect(currentBoard.board).toEqual([
                 [2, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -173,6 +173,42 @@ describe('Board', () => {
                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 2],
             ])
+        })
+
+        it('Should returns winner:true when all values are in place', () => {
+            const starterBoard = [
+                [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                [2, 3, 4, 5, 6, 7, 8, 9, 1],
+                [3, 4, 5, 6, 7, 8, 9, 1, 2],
+                [4, 5, 6, 7, 8, 9, 1, 2, 3],
+                [5, 6, 7, 8, 9, 1, 2, 3, 4],
+                [6, 7, 8, 9, 1, 2, 3, 4, 5],
+                [7, 8, 9, 1, 2, 3, 4, 5, 6],
+                [8, 9, 1, 2, 3, 4, 5, 6, 7],
+                [9, 1, 2, 3, 4, 5, 6, 7, 0],
+            ]
+
+            const expectedBoard = [
+                [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                [2, 3, 4, 5, 6, 7, 8, 9, 1],
+                [3, 4, 5, 6, 7, 8, 9, 1, 2],
+                [4, 5, 6, 7, 8, 9, 1, 2, 3],
+                [5, 6, 7, 8, 9, 1, 2, 3, 4],
+                [6, 7, 8, 9, 1, 2, 3, 4, 5],
+                [7, 8, 9, 1, 2, 3, 4, 5, 6],
+                [8, 9, 1, 2, 3, 4, 5, 6, 7],
+                [9, 1, 2, 3, 4, 5, 6, 7, 8],
+            ]
+
+            const board = makeBoard(starterBoard)
+            const lastInput = getFakeInput(8, [8, 8])
+
+            board.move(lastInput)
+
+            const currentBoard = board.get()
+
+            expect(currentBoard.winner).toBe(true)
+            expect(currentBoard.board).toEqual(expectedBoard)
         })
     })
  })
