@@ -43,6 +43,10 @@ export class Board {
         this.playerBoard[spot[0]][spot[1]] = value
     }
 
+    get = (): number[][] => {
+        return this.playerBoard
+    }
+
     private resetPlayerBoard = (): number[][] => {
         return [
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
