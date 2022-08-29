@@ -1,3 +1,4 @@
+import { DuplicatedValueError } from "../errors/duplicated-value-error"
 import { InvalidEntryError } from "../errors/invalid-entry-error"
 import { InvalidSpotError } from "../errors/invalid-spot-error"
 import { boardInputModel } from "../models/game-input-model"
@@ -7,6 +8,7 @@ import { EntryValueValidator } from "../validators/entry-value-validator"
 export class Board {
     private entryValidator: EntryValueValidator
     private spotValidator: EntrySpotValidator
+    private playerBoard: number[][]
 
     constructor(
         entryValidator: EntryValueValidator,
@@ -14,6 +16,7 @@ export class Board {
     ) {
         this.entryValidator = entryValidator
         this.spotValidator = spotValidator
+        this.playerBoard = this.resetPlayerBoard()
     }
 
     move = ( input: boardInputModel ): void => {
@@ -27,5 +30,28 @@ export class Board {
         if ( !this.spotValidator.validate(spot) ) {
             throw new InvalidSpotError()
         }
+
+        for (let index = 0; index < this.playerBoard.length; index++) {
+            if (this.playerBoard[index].includes(value)) {
+                throw new DuplicatedValueError()
+            }
+        }
+
+        this.playerBoard[spot[0]][spot[1]] = value
+
+    }
+
+    private resetPlayerBoard = (): number[][] => {
+        return [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        ]
     }
 }
