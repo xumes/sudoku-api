@@ -106,6 +106,15 @@ describe('Board', () => {
             
             expect(() => board.move(input)).toThrow(new DuplicatedValueError)
         })
+
+        it('Should returns winner:false when there is still 0 in the board', () => {
+            const board = makeBoard()
+            const firstInput = getFakeInput(2, [5, 7])
+
+            const currentBoard = board.move(firstInput)
+
+            expect(currentBoard.winner).toBe(false)
+        })
     })
 
     describe('Board.get', () => {
