@@ -6,12 +6,12 @@ import { BoardChecker } from "../../src/validators/board-checker"
 import { EntrySpotValidator } from "../../src/validators/entry-spot-validator"
 import { EntryValueValidator } from "../../src/validators/entry-value-validator"
 
-const makeBoard = (): Board => {
+const makeBoard = (starterBoard?: number[][]): Board => {
     const entryValueValidator = new EntryValueValidator()
     const entrySpotValidator = new EntrySpotValidator()
     const boardChecker = new BoardChecker()
 
-    return new Board(entryValueValidator, entrySpotValidator, boardChecker)
+    return new Board(entryValueValidator, entrySpotValidator, boardChecker, starterBoard)
 }
 
 const getFakeInput = (fakeValue?: number, fakeSpot?: number[]) => ({
@@ -115,10 +115,44 @@ describe('Board', () => {
 
             expect(currentBoard.winner).toBe(false)
         })
+
+        it('Should returns winner:true when all values are in place', () => {
+            const starterBoard = [
+                [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                [2, 3, 4, 5, 6, 7, 8, 9, 1],
+                [3, 4, 5, 6, 7, 8, 9, 1, 2],
+                [4, 5, 6, 7, 8, 9, 1, 2, 3],
+                [5, 6, 7, 8, 9, 1, 2, 3, 4],
+                [6, 7, 8, 9, 1, 2, 3, 4, 5],
+                [7, 8, 9, 1, 2, 3, 4, 5, 6],
+                [8, 9, 1, 2, 3, 4, 5, 6, 7],
+                [9, 1, 2, 3, 4, 5, 6, 7, 0],
+            ]
+
+            const expectedBoard = [
+                [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                [2, 3, 4, 5, 6, 7, 8, 9, 1],
+                [3, 4, 5, 6, 7, 8, 9, 1, 2],
+                [4, 5, 6, 7, 8, 9, 1, 2, 3],
+                [5, 6, 7, 8, 9, 1, 2, 3, 4],
+                [6, 7, 8, 9, 1, 2, 3, 4, 5],
+                [7, 8, 9, 1, 2, 3, 4, 5, 6],
+                [8, 9, 1, 2, 3, 4, 5, 6, 7],
+                [9, 1, 2, 3, 4, 5, 6, 7, 8],
+            ]
+
+            const board = makeBoard(starterBoard)
+            const lastInput = getFakeInput(8, [8, 8])
+
+            const currentBoard = board.move(lastInput)
+
+            expect(currentBoard.winner).toBe(true)
+            expect(currentBoard.board).toEqual(expectedBoard)
+        })
     })
 
     describe('Board.get', () => {
-        it('Should return the current board on success', () => {
+        it('Should return the current board after each move', () => {
             const board = makeBoard()
             const firstInput = getFakeInput(2, [0, 0])
             const secodnInput = getFakeInput(2, [8, 8])
