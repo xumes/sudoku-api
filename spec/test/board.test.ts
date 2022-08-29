@@ -1,3 +1,4 @@
+import { DuplicatedValueError } from "../../src/errors/duplicated-value-error"
 import { InvalidEntryError } from "../../src/errors/invalid-entry-error"
 import { InvalidSpotError } from "../../src/errors/invalid-spot-error"
 import { Board } from "../../src/game/board"
@@ -66,17 +67,27 @@ describe('Board', () => {
         expect(() => sut.move(input)).toThrow(new InvalidSpotError)
     })
 
-    it.only('Should throws InvalidSpotError when position has only one value', () => {
+    it('Should throws InvalidSpotError when position has only one value', () => {
         const { sut } = makeSUT()
         const input = getFakeInput(2, [1])
         
         expect(() => sut.move(input)).toThrow(new InvalidSpotError)
     })
 
-    it.only('Should throws InvalidSpotError when position has more than 2 values', () => {
+    it('Should throws InvalidSpotError when position has more than 2 values', () => {
         const { sut } = makeSUT()
         const input = getFakeInput(2, [1, 2, 3])
         
         expect(() => sut.move(input)).toThrow(new InvalidSpotError)
+    })
+
+    it('Should throws DuplicatedValueError when the input already exists in a row', () => {
+        const { sut } = makeSUT()
+        const firstInput = getFakeInput(2, [1, 2])
+        const input = getFakeInput(2, [1, 2])
+
+        sut.move(firstInput)
+        
+        expect(() => sut.move(input)).toThrow(new DuplicatedValueError)
     })
  })
