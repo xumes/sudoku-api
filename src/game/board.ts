@@ -1,6 +1,7 @@
 import { DuplicatedValueError } from "../errors/duplicated-value-error"
 import { InvalidEntryError } from "../errors/invalid-entry-error"
 import { InvalidSpotError } from "../errors/invalid-spot-error"
+import { CurrentBoardModel } from "../models/current-board-model"
 import { boardInputModel } from "../models/game-input-model"
 import { BoardChecker } from "../validators/board-checker"
 import { EntrySpotValidator } from "../validators/entry-spot-validator"
@@ -23,7 +24,7 @@ export class Board {
         this.playerBoard = this.resetPlayerBoard()
     }
 
-    move = ( input: boardInputModel ): void => {
+    move = ( input: boardInputModel ): CurrentBoardModel => {
         const { value } = input
         const { spot } = input
 
@@ -41,6 +42,11 @@ export class Board {
         }
 
         this.playerBoard[spot[0]][spot[1]] = value
+
+        return {
+            winner: false,
+            board: this.playerBoard
+        }
     }
 
     get = (): number[][] => {
