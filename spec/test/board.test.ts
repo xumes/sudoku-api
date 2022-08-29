@@ -6,12 +6,12 @@ import { BoardChecker } from "../../src/validators/board-checker"
 import { EntrySpotValidator } from "../../src/validators/entry-spot-validator"
 import { EntryValueValidator } from "../../src/validators/entry-value-validator"
 
-const makeBoard = (starterBoard?: number[][]): Board => {
+const makeBoard = (): Board => {
     const entryValueValidator = new EntryValueValidator()
     const entrySpotValidator = new EntrySpotValidator()
     const boardChecker = new BoardChecker()
 
-    return new Board(entryValueValidator, entrySpotValidator, boardChecker, starterBoard)
+    return new Board(entryValueValidator, entrySpotValidator, boardChecker)
 }
 
 const getFakeInput = (fakeValue?: number, fakeSpot?: number[]) => ({
@@ -82,6 +82,8 @@ describe('Board', () => {
             const firstInput = getFakeInput(2, [1, 2])
             const input = getFakeInput(2, [1, 2])
 
+            board.start()
+
             board.move(firstInput)
             
             expect(() => board.move(input)).toThrow(new DuplicatedValueError)
@@ -91,6 +93,8 @@ describe('Board', () => {
             const board = makeBoard()
             const firstInput = getFakeInput(2, [1, 2])
             const input = getFakeInput(2, [1, 4])
+
+            board.start()
 
             board.move(firstInput)
             
@@ -102,6 +106,8 @@ describe('Board', () => {
             const firstInput = getFakeInput(2, [5, 7])
             const input = getFakeInput(2, [1, 7])
 
+            board.start()
+
             board.move(firstInput)
             
             expect(() => board.move(input)).toThrow(new DuplicatedValueError)
@@ -110,6 +116,8 @@ describe('Board', () => {
         it('Should returns winner:false when there is still 0 in the board', () => {
             const board = makeBoard()
             const firstInput = getFakeInput(2, [5, 7])
+
+            board.start()
 
             const currentBoard = board.move(firstInput)
 
@@ -129,6 +137,12 @@ describe('Board', () => {
                 [9, 1, 2, 3, 4, 5, 6, 7, 0],
             ]
 
+            const board = makeBoard()
+            board.start(starterBoard)
+
+            const lastInput = getFakeInput(8, [8, 8])
+            const currentBoard = board.move(lastInput)
+
             const expectedBoard = [
                 [1, 2, 3, 4, 5, 6, 7, 8, 9],
                 [2, 3, 4, 5, 6, 7, 8, 9, 1],
@@ -141,11 +155,6 @@ describe('Board', () => {
                 [9, 1, 2, 3, 4, 5, 6, 7, 8],
             ]
 
-            const board = makeBoard(starterBoard)
-            const lastInput = getFakeInput(8, [8, 8])
-
-            const currentBoard = board.move(lastInput)
-
             expect(currentBoard.winner).toBe(true)
             expect(currentBoard.board).toEqual(expectedBoard)
         })
@@ -154,6 +163,8 @@ describe('Board', () => {
     describe('Board.get', () => {
         it('Should return the current board after each move', () => {
             const board = makeBoard()
+            board.start()
+
             const firstInput = getFakeInput(2, [0, 0])
             const secodnInput = getFakeInput(2, [8, 8])
 
@@ -200,7 +211,9 @@ describe('Board', () => {
                 [9, 1, 2, 3, 4, 5, 6, 7, 8],
             ]
 
-            const board = makeBoard(starterBoard)
+            const board = makeBoard()
+            board.start(starterBoard)
+
             const lastInput = getFakeInput(8, [8, 8])
 
             board.move(lastInput)
@@ -209,6 +222,49 @@ describe('Board', () => {
 
             expect(currentBoard.winner).toBe(true)
             expect(currentBoard.board).toEqual(expectedBoard)
+        })
+    })
+
+    describe('Board.start', () => {
+        it('Should return the default board', () => {
+            const board = makeBoard()
+            board.start()
+
+            const currentBoard = board.get()
+
+            expect(currentBoard.board).toEqual([
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            ])
+        })
+
+        it('Should returns the starter board', () => {
+            const starterBoard = [
+                [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                [2, 3, 4, 5, 6, 7, 8, 9, 1],
+                [3, 4, 5, 6, 7, 8, 9, 1, 2],
+                [4, 5, 6, 7, 8, 9, 1, 2, 3],
+                [5, 6, 7, 8, 9, 1, 2, 3, 4],
+                [6, 7, 8, 9, 1, 2, 3, 4, 5],
+                [7, 8, 9, 1, 2, 3, 4, 5, 6],
+                [8, 9, 1, 2, 3, 4, 5, 6, 7],
+                [9, 1, 2, 3, 4, 5, 6, 7, 0],
+            ]
+
+            const board = makeBoard()
+            board.start(starterBoard)
+            
+            const currentBoard = board.get()
+
+            expect(currentBoard.winner).toBe(false)
+            expect(currentBoard.board).toEqual(starterBoard)
         })
     })
  })
