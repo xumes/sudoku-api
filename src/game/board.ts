@@ -17,12 +17,20 @@ export class Board {
         entryValidator: EntryValueValidator,
         spotValidator: EntrySpotValidator,
         boardChecker: BoardChecker,
-        starterBoard?: number[][]
     ) {
         this.entryValidator = entryValidator
         this.spotValidator = spotValidator
         this.boardChecker = boardChecker
+        this.playerBoard = []
+    }
+
+    start = (starterBoard?: number[][]): CurrentBoardModel => {
         this.playerBoard = starterBoard || this.resetPlayerBoard()
+
+        return {
+            winner: false,
+            board: this.playerBoard
+        }
     }
 
     move = ( input: boardInputModel ): CurrentBoardModel => {
