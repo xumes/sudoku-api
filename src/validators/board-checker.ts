@@ -1,6 +1,4 @@
-import { Validator } from "../interfaces/validator-interface";
-
-export class DuplicatedValueValidator {
+export class BoardChecker {
     exists(value: number, position: number[], currentBoard: number[][]): boolean {
         if (currentBoard[position[0]].includes(value)) {
             return true

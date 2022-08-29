@@ -2,16 +2,16 @@ import { DuplicatedValueError } from "../../src/errors/duplicated-value-error"
 import { InvalidEntryError } from "../../src/errors/invalid-entry-error"
 import { InvalidSpotError } from "../../src/errors/invalid-spot-error"
 import { Board } from "../../src/game/board"
-import { DuplicatedValueValidator } from "../../src/validators/duplicated-value-validator"
+import { BoardChecker } from "../../src/validators/board-checker"
 import { EntrySpotValidator } from "../../src/validators/entry-spot-validator"
 import { EntryValueValidator } from "../../src/validators/entry-value-validator"
 
 const makeBoard = (): Board => {
     const entryValueValidator = new EntryValueValidator()
     const entrySpotValidator = new EntrySpotValidator()
-    const duplicatedValueValidator = new DuplicatedValueValidator()
+    const boardChecker = new BoardChecker()
 
-    return new Board(entryValueValidator, entrySpotValidator, duplicatedValueValidator)
+    return new Board(entryValueValidator, entrySpotValidator, boardChecker)
 }
 
 const getFakeInput = (fakeValue?: number, fakeSpot?: number[]) => ({
