@@ -90,4 +90,14 @@ describe('Board', () => {
         
         expect(() => sut.move(input)).toThrow(new DuplicatedValueError)
     })
+
+    it('Should throws DuplicatedValueError when the input already exists in a row', () => {
+        const { sut } = makeSUT()
+        const firstInput = getFakeInput(2, [1, 2])
+        const input = getFakeInput(2, [1, 4])
+
+        sut.move(firstInput)
+        
+        expect(() => sut.move(input)).toThrow(new DuplicatedValueError)
+    })
  })
