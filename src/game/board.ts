@@ -16,12 +16,13 @@ export class Board {
     constructor(
         entryValidator: EntryValueValidator,
         spotValidator: EntrySpotValidator,
-        boardChecker: BoardChecker
+        boardChecker: BoardChecker,
+        starterBoard?: number[][]
     ) {
         this.entryValidator = entryValidator
         this.spotValidator = spotValidator
         this.boardChecker = boardChecker
-        this.playerBoard = this.resetPlayerBoard()
+        this.playerBoard = starterBoard || this.resetPlayerBoard()
     }
 
     move = ( input: boardInputModel ): CurrentBoardModel => {
@@ -42,9 +43,10 @@ export class Board {
         }
 
         this.playerBoard[spot[0]][spot[1]] = value
+        console.log("has winner?", this.boardChecker.hasWinner(this.playerBoard))
 
         return {
-            winner: false,
+            winner: this.boardChecker.hasWinner(this.playerBoard),
             board: this.playerBoard
         }
     }
