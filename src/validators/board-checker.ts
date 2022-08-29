@@ -17,12 +17,4 @@ export class BoardChecker {
         const boardString = currentBoard.join(",")
         return !boardString.includes("0")
     }
-
-    private rowLookup(value: number, row: number[]): boolean {
-        if (row.includes(value)) {
-            return true
-        }
-
-        return false
-    }
 }
