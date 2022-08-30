@@ -1,10 +1,17 @@
 import express from "express"
+import session from "express-session"
 import { HttpStatusCode } from "./http/http-helper";
 import apiRoutes from "./routes"
 
 const port = (process.env.PORT || 3000)
 
 const app = express()
+app.use(session({
+    secret: '[{-_-}] ZZZzz zz z...',
+    cookie: { maxAge: 60000 },
+    resave: false,
+    saveUninitialized: true,
+}))
 
 app.get('/status', (req, res) => {
     const hc = {
@@ -20,8 +27,7 @@ app.get('/status', (req, res) => {
     }
 })
 
-app.get("/", apiRoutes)
-
+app.use("/", apiRoutes)
 
 app.listen(port, () => {
     console.info("Server is running at port: " + port);
