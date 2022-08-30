@@ -5,12 +5,13 @@ import { BoardService } from '../services/board-service';
 
 const router = Router();
 
+const EXPIRE_8H = 28800;
+
 const client = createClient({
     url: "redis://redis"
 });
 
 client.on('error', (err) => console.log('Redis Client Error', err));
-
 client.connect();
 
 router.get('/', async (req: Request, res: Response) => {
@@ -30,9 +31,9 @@ router.post('/', async (req: Request, res: Response) => {
 
     const boardService = new BoardService()
     const initialBoard = boardService.startGame()
-    
-    await client.set(sessionId, JSON.stringify(initialBoard));
 
+    await client.set(sessionId, JSON.stringify(initialBoard), { 'EX': EXPIRE_8H});
+    
     res.status(HttpStatusCode.CREATED).json(initialBoard)
 })
 
