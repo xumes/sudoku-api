@@ -27,3 +27,10 @@ When you see the message Server is running at port: 3000 the game is up and runn
   - Check your latest move
 - The sessions lives during 8 hours. After that, your board is deleted and you need to start a new one
 - You don't need to identify yourself
+
+## How to play
+
+- First start a new board
+- Place numbers into the board
+
+See details on our Swagger documentation
