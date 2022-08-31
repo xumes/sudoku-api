@@ -34,8 +34,9 @@ export class Board {
         }
     }
 
-    move = ( input: boardInputModel ): CurrentBoardModel => {
+    move = ( input: boardInputModel, savedBoard: CurrentBoardModel ): CurrentBoardModel => {
         const { value, spot } = input
+        const { board } = savedBoard
 
         if (!this.entryValidator.validate(value)) {
             throw new InvalidEntryError()
@@ -46,15 +47,15 @@ export class Board {
         }
 
         // check for duplicated value in the input row
-        if ( this.boardChecker.exists(value, spot, this.playerBoard) ) {
+        if ( this.boardChecker.exists(value, spot, board) ) {
             throw new DuplicatedValueError()
         }
 
-        this.playerBoard[spot[0]][spot[1]] = value
+        board[spot[0]][spot[1]] = value
 
         return {
-            winner: this.boardChecker.hasWinner(this.playerBoard),
-            board: this.playerBoard
+            winner: this.boardChecker.hasWinner(board),
+            board
         }
     }
 

@@ -40,8 +40,6 @@ router.post('/move', async (req: Request, res: Response) => {
         return
     }
 
-    console.log("este é o body", req.body)
-    
     const {value, spot} = req.body
     const input = {value, spot}
 
@@ -62,10 +60,10 @@ router.post('/move', async (req: Request, res: Response) => {
             err instanceof InvalidSpotError ||
             err instanceof DuplicatedValueError
             ) {
-            res.status(HttpStatusCode.BAD_REQUEST).json({err})
+            res.status(HttpStatusCode.BAD_REQUEST).json({"error": err.message})
         }
         else {
-            res.status(HttpStatusCode.BAD_REQUEST).json({err})
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({err})
         }
     }
 })

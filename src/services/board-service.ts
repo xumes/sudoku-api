@@ -46,14 +46,12 @@ export class BoardService {
 
     async move (id: string, input: boardInputModel): Promise<CurrentBoardModel|null> {
         const savedBoard = await this.getBoard(id)
+
         if (!savedBoard || savedBoard.board.length === 0) {
-            console.log("no board")
             return null
         }
 
-        console.log("este é o board", savedBoard)
-
-        const currentBoard = this.board.move(input)
+        const currentBoard = this.board.move(input, savedBoard)
 
         if (currentBoard) {
             await this.saveBoard(id, currentBoard)
