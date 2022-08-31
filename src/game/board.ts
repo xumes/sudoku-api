@@ -2,6 +2,7 @@ import { DuplicatedValueError } from "../errors/duplicated-value-error"
 import { InvalidEntryError } from "../errors/invalid-entry-error"
 import { InvalidSpotError } from "../errors/invalid-spot-error"
 import { InvalidUndoError } from "../errors/invalid-undo-error"
+import { SpotOccupiedError } from "../errors/spot-occupied-error"
 import { CurrentBoardModel } from "../models/current-board-model"
 import { boardInputModel } from "../models/game-input-model"
 import { BoardChecker } from "../validators/board-checker"
@@ -49,6 +50,10 @@ export class Board {
         // check for duplicated value in the input row
         if ( this.boardChecker.exists(value, spot, board) ) {
             throw new DuplicatedValueError()
+        }
+
+        if ( this.boardChecker.isOccupied(spot, board)) {
+            throw new SpotOccupiedError()
         }
 
         board[spot[0]][spot[1]] = value

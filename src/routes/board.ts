@@ -3,6 +3,7 @@ import { DuplicatedValueError } from '../errors/duplicated-value-error';
 import { InvalidEntryError } from '../errors/invalid-entry-error';
 import { InvalidSpotError } from '../errors/invalid-spot-error';
 import { InvalidUndoError } from '../errors/invalid-undo-error';
+import { SpotOccupiedError } from '../errors/spot-occupied-error';
 
 import { HttpStatusCode } from '../http/http-helper';
 import { BoardService } from '../services/board-service';
@@ -72,7 +73,8 @@ router.post('/move', async (req: Request, res: Response) => {
     catch (err) {
         if (err instanceof InvalidEntryError ||
             err instanceof InvalidSpotError ||
-            err instanceof DuplicatedValueError
+            err instanceof DuplicatedValueError ||
+            err instanceof SpotOccupiedError
             ) {
             res.status(HttpStatusCode.BAD_REQUEST).json({"message": err.message})
         }

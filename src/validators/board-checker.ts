@@ -13,6 +13,14 @@ export class BoardChecker {
         return false
     }
 
+    isOccupied(position: number[], currentBoard: number[][]): boolean {
+        if (currentBoard[position[0]][position[1]] !== 0) {
+            return true
+        }
+
+        return false
+    }
+
     hasWinner(currentBoard: number[][]): boolean {
         const boardString = currentBoard.join(",")
         return !boardString.includes("0") && boardString.length > 0
