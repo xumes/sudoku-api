@@ -1,40 +1,77 @@
 import { Request, Response, Router } from 'express';
-import {createClient} from 'redis';
+import { DuplicatedValueError } from '../errors/duplicated-value-error';
+import { InvalidEntryError } from '../errors/invalid-entry-error';
+import { InvalidSpotError } from '../errors/invalid-spot-error';
+
 import { HttpStatusCode } from '../http/http-helper';
 import { BoardService } from '../services/board-service';
 
 const router = Router();
 
-const EXPIRE_8H = 28800;
-
-const client = createClient({
-    url: "redis://redis"
-});
-
-client.on('error', (err) => console.log('Redis Client Error', err));
-client.connect();
-
 router.get('/', async (req: Request, res: Response) => {
     const sessionId = req.sessionID
-    const value = await client.get(sessionId) || "";
+    const boardService = new BoardService()
+    const currentBoard = await boardService.getBoard(sessionId)
 
-    if (!value) {
-        res.json({"status": "There is no active game, please start one"})
+    if (!currentBoard || currentBoard.board.length === 0) {
+        res.status(HttpStatusCode.NOT_FOUND).json({"status": "There is no active game, please start one"})
         return
     }
 
-    res.json({"status": JSON.parse(value)})
+    res.status(HttpStatusCode.OK).json({"status": currentBoard})
 })
 
 router.post('/', async (req: Request, res: Response) => {
     const sessionId = req.sessionID
 
     const boardService = new BoardService()
-    const initialBoard = boardService.startGame()
+    const initialBoard = boardService.startGame(sessionId)
 
-    await client.set(sessionId, JSON.stringify(initialBoard), { 'EX': EXPIRE_8H});
-    
+    await boardService.saveBoard(sessionId, initialBoard)
+
     res.status(HttpStatusCode.CREATED).json(initialBoard)
+})
+
+router.post('/move', async (req: Request, res: Response) => {
+    const sessionId = req.sessionID
+    if (!req.body) {
+        console.log("erro no body", req.body)
+        res.status(HttpStatusCode.BAD_REQUEST).end()
+        return
+    }
+
+    console.log("este é o body", req.body)
+    
+    const {value, spot} = req.body
+    const input = {value, spot}
+
+    const boardService = new BoardService()
+
+    try {
+        const currentBoard = await boardService.move(sessionId, input)
+
+        if (!currentBoard) {
+            res.status(HttpStatusCode.NOT_FOUND).json({"status": "There is no active game, please start one"})
+            return
+        }
+
+        res.status(HttpStatusCode.CREATED).json(currentBoard)
+    }
+    catch (err) {
+        if (err instanceof InvalidEntryError ||
+            err instanceof InvalidSpotError ||
+            err instanceof DuplicatedValueError
+            ) {
+            res.status(HttpStatusCode.BAD_REQUEST).json({err})
+        }
+        else {
+            res.status(HttpStatusCode.BAD_REQUEST).json({err})
+        }
+    }
+})
+
+router.put('/undo', async (req: Request, res: Response) => {
+    const sessionId = req.sessionID
 })
 
 export default router;

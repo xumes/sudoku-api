@@ -1,6 +1,7 @@
 import { DuplicatedValueError } from "../errors/duplicated-value-error"
 import { InvalidEntryError } from "../errors/invalid-entry-error"
 import { InvalidSpotError } from "../errors/invalid-spot-error"
+import { InvalidUndoError } from "../errors/invalid-undo-error"
 import { CurrentBoardModel } from "../models/current-board-model"
 import { boardInputModel } from "../models/game-input-model"
 import { BoardChecker } from "../validators/board-checker"
@@ -34,8 +35,7 @@ export class Board {
     }
 
     move = ( input: boardInputModel ): CurrentBoardModel => {
-        const { value } = input
-        const { spot } = input
+        const { value, spot } = input
 
         if (!this.entryValidator.validate(value)) {
             throw new InvalidEntryError()
@@ -51,10 +51,25 @@ export class Board {
         }
 
         this.playerBoard[spot[0]][spot[1]] = value
-        console.log("has winner?", this.boardChecker.hasWinner(this.playerBoard))
 
         return {
             winner: this.boardChecker.hasWinner(this.playerBoard),
+            board: this.playerBoard
+        }
+    }
+
+    undo = (input: boardInputModel ): CurrentBoardModel => {
+        const { value, spot } = input
+
+        //first, check if the movement exists
+        if ( !this.boardChecker.exists(value, spot, this.playerBoard) ) {
+            throw new InvalidUndoError()
+        }
+
+        this.playerBoard[spot[0]][spot[1]] = 0
+
+        return {
+            winner: false,
             board: this.playerBoard
         }
     }

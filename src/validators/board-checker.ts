@@ -15,6 +15,6 @@ export class BoardChecker {
 
     hasWinner(currentBoard: number[][]): boolean {
         const boardString = currentBoard.join(",")
-        return !boardString.includes("0")
+        return !boardString.includes("0") && boardString.length > 0
     }
 }
