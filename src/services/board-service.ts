@@ -32,6 +32,16 @@ export class BoardService {
         return JSON.parse(data)
     }
 
+    async getlastMove (id: string): Promise<boardInputModel|null> {
+        const data = await this.redisClient.get(`${id}:last-move`)
+
+        if (!data) {
+            return null
+        }
+
+        return JSON.parse(data)
+    }
+
     async saveBoard (id: string, board: CurrentBoardModel): Promise<void> {
         await this.redisClient.set(id, JSON.stringify(board), { 'EX': this.expire8Hours });
     }

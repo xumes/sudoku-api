@@ -14,11 +14,11 @@ router.get('/', async (req: Request, res: Response) => {
     const currentBoard = await boardService.getBoard(sessionId)
 
     if (!currentBoard || currentBoard.board.length === 0) {
-        res.status(HttpStatusCode.NOT_FOUND).json({"status": "There is no active game, please start one"})
+        res.status(HttpStatusCode.NOT_FOUND).json({"message": "There is no active game, please start one"})
         return
     }
 
-    res.status(HttpStatusCode.OK).json({"status": currentBoard})
+    res.status(HttpStatusCode.OK).json(currentBoard)
 })
 
 router.post('/', async (req: Request, res: Response) => {
@@ -32,10 +32,23 @@ router.post('/', async (req: Request, res: Response) => {
     res.status(HttpStatusCode.CREATED).json(initialBoard)
 })
 
+router.get('/move', async (req:Request, res: Response) => {
+    const sessionId = req.sessionID
+
+    const boardService = new BoardService()
+    const lastMove = await boardService.getlastMove(sessionId)
+
+    if (!lastMove) {
+        res.status(HttpStatusCode.NOT_FOUND).json({"message": "There is no previous move record"})
+        return
+    }
+
+    res.status(HttpStatusCode.OK).json(lastMove)
+})
+
 router.post('/move', async (req: Request, res: Response) => {
     const sessionId = req.sessionID
     if (!req.body) {
-        console.log("erro no body", req.body)
         res.status(HttpStatusCode.BAD_REQUEST).end()
         return
     }
@@ -49,7 +62,7 @@ router.post('/move', async (req: Request, res: Response) => {
         const currentBoard = await boardService.move(sessionId, input)
 
         if (!currentBoard) {
-            res.status(HttpStatusCode.NOT_FOUND).json({"status": "There is no active game, please start one"})
+            res.status(HttpStatusCode.NOT_FOUND).json({"message": "There is no active game, please start one"})
             return
         }
 
@@ -60,7 +73,7 @@ router.post('/move', async (req: Request, res: Response) => {
             err instanceof InvalidSpotError ||
             err instanceof DuplicatedValueError
             ) {
-            res.status(HttpStatusCode.BAD_REQUEST).json({"error": err.message})
+            res.status(HttpStatusCode.BAD_REQUEST).json({"message": err.message})
         }
         else {
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({err})
