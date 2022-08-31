@@ -82,7 +82,7 @@ router.post('/move', async (req: Request, res: Response) => {
     }
 })
 
-router.put('/undo', async (req: Request, res: Response) => {
+router.put('/move', async (req: Request, res: Response) => {
     const sessionId = req.sessionID
 
     const boardService = new BoardService()
