@@ -1,4 +1,5 @@
 import { DuplicatedValueError } from "../errors/duplicated-value-error"
+import { GameWinnerError } from "../errors/game-winner-error"
 import { InvalidEntryError } from "../errors/invalid-entry-error"
 import { InvalidSpotError } from "../errors/invalid-spot-error"
 import { InvalidUndoError } from "../errors/invalid-undo-error"
@@ -13,7 +14,7 @@ export class Board {
     private entryValidator: EntryValueValidator
     private spotValidator: EntrySpotValidator
     private boardChecker: BoardChecker
-    private playerBoard: number[][]
+    private playerBoard: string[]
 
     constructor(
         entryValidator: EntryValueValidator,
@@ -26,7 +27,7 @@ export class Board {
         this.playerBoard = []
     }
 
-    start = (starterBoard?: number[][]): CurrentBoardModel => {
+    start = (starterBoard?: string[]): CurrentBoardModel => {
         this.playerBoard = starterBoard || this.resetPlayerBoard()
 
         return {
@@ -37,7 +38,11 @@ export class Board {
 
     move = ( input: boardInputModel, savedBoard: CurrentBoardModel ): CurrentBoardModel => {
         const { value, spot } = input
-        const { board } = savedBoard
+        const { board, winner } = savedBoard
+
+        if (winner) {
+            throw new GameWinnerError()
+        }
 
         if (!this.entryValidator.validate(value)) {
             throw new InvalidEntryError()
@@ -55,8 +60,8 @@ export class Board {
         if ( this.boardChecker.isOccupied(spot, board)) {
             throw new SpotOccupiedError()
         }
-
-        board[spot[0]][spot[1]] = value
+        
+        board[spot[0]] = this.updateValue(board[spot[0]], spot[1], value)
 
         return {
             winner: this.boardChecker.hasWinner(board),
@@ -73,7 +78,7 @@ export class Board {
             throw new InvalidUndoError()
         }
 
-        board[spot[0]][spot[1]] = 0
+        board[spot[0]] = this.updateValue(board[spot[0]], spot[1], 0)
 
         return {
             winner: false,
@@ -88,17 +93,23 @@ export class Board {
         }
     }
 
-    private resetPlayerBoard = (): number[][] => {
+    private updateValue = (row: string, position: number, value: number): string => {
+        const rowArray = row.split('')
+        rowArray[position] = String(value)
+        return rowArray.join('')
+    }
+
+    private resetPlayerBoard = (): string[] => {
         return [
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "000000000",
+            "000000000",
+            "000000000",
+            "000000000",
+            "000000000",
+            "000000000",
+            "000000000",
+            "000000000",
+            "000000000",
         ]
     }
 }

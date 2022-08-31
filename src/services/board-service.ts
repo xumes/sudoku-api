@@ -54,7 +54,7 @@ export class BoardService {
         await this.redisClient.del(`${id}:last-move`);
     }
 
-    startGame (id: string, starterBoard?: number[][]): CurrentBoardModel {
+    startGame (id: string, starterBoard?: string[]): CurrentBoardModel {
         return this.board.start(starterBoard)
     }
 
