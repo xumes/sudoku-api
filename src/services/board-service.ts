@@ -50,6 +50,10 @@ export class BoardService {
         await this.redisClient.set(`${id}:last-move`, JSON.stringify(input), { 'EX': this.expire8Hours });
     }
 
+    async deleteLastMove (id: string): Promise<void> {
+        await this.redisClient.del(`${id}:last-move`);
+    }
+
     startGame (id: string, starterBoard?: number[][]): CurrentBoardModel {
         return this.board.start(starterBoard)
     }
@@ -66,6 +70,27 @@ export class BoardService {
         if (currentBoard) {
             await this.saveBoard(id, currentBoard)
             await this.saveLastMove(id, input)
+        }
+
+        return currentBoard
+    }
+
+    async undo (id: string): Promise<CurrentBoardModel|null> {
+        const savedBoard = await this.getBoard(id)
+        if (!savedBoard || savedBoard.board.length === 0) {
+            return null
+        }
+
+        const savedInput = await this.getlastMove(id)
+        if (!savedInput) {
+            return null
+        }
+
+        const currentBoard = this.board.undo(savedInput, savedBoard)
+
+        if (currentBoard) {
+            await this.saveBoard(id, currentBoard)
+            await this.deleteLastMove(id)
         }
 
         return currentBoard

@@ -83,6 +83,16 @@ router.post('/move', async (req: Request, res: Response) => {
 
 router.put('/undo', async (req: Request, res: Response) => {
     const sessionId = req.sessionID
+
+    const boardService = new BoardService()
+    const currentBoard = await boardService.undo(sessionId)
+
+    if (!currentBoard) {
+        res.status(HttpStatusCode.NOT_FOUND).json({"message": "There is no active game, please start one"})
+        return
+    }
+
+    res.status(HttpStatusCode.CREATED).json(currentBoard)
 })
 
 export default router;

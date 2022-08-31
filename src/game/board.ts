@@ -59,19 +59,20 @@ export class Board {
         }
     }
 
-    undo = (input: boardInputModel ): CurrentBoardModel => {
+    undo = (input: boardInputModel, savedBoard: CurrentBoardModel ): CurrentBoardModel => {
         const { value, spot } = input
+        const { board } = savedBoard
 
         //first, check if the movement exists
-        if ( !this.boardChecker.exists(value, spot, this.playerBoard) ) {
+        if ( !this.boardChecker.exists(value, spot, board) ) {
             throw new InvalidUndoError()
         }
 
-        this.playerBoard[spot[0]][spot[1]] = 0
+        board[spot[0]][spot[1]] = 0
 
         return {
             winner: false,
-            board: this.playerBoard
+            board
         }
     }
 
