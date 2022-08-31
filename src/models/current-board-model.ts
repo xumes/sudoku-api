@@ -1,4 +1,4 @@
 export type CurrentBoardModel = {
     winner: boolean
-    board: number[][]
+    board: string[]
 }
