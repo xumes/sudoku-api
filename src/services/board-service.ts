@@ -95,4 +95,22 @@ export class BoardService {
 
         return currentBoard
     }
+
+    async clean (id: string, input: boardInputModel): Promise<CurrentBoardModel|null> {
+        const savedBoard = await this.getBoard(id)
+        if (!savedBoard || savedBoard.board.length === 0) {
+            return null
+        }
+
+        const currentBoard = this.board.undo(input, savedBoard)
+
+        const lastInput = Object.assign({}, input, {value: 0})
+
+        if (currentBoard) {
+            await this.saveBoard(id, currentBoard)
+            await this.saveLastMove(id, lastInput)
+        }
+
+        return currentBoard
+    }
 }

@@ -2,6 +2,7 @@ import { Request, Response, Router } from 'express';
 import { DuplicatedValueError } from '../errors/duplicated-value-error';
 import { InvalidEntryError } from '../errors/invalid-entry-error';
 import { InvalidSpotError } from '../errors/invalid-spot-error';
+import { InvalidUndoError } from '../errors/invalid-undo-error';
 
 import { HttpStatusCode } from '../http/http-helper';
 import { BoardService } from '../services/board-service';
@@ -93,6 +94,39 @@ router.put('/undo', async (req: Request, res: Response) => {
     }
 
     res.status(HttpStatusCode.CREATED).json(currentBoard)
+})
+
+router.delete('/move', async (req: Request, res: Response) => {
+    if (!req.body) {
+        res.status(HttpStatusCode.BAD_REQUEST).end()
+        return
+    }
+
+    const {value, spot} = req.body
+    const input = {value, spot}
+    const sessionId = req.sessionID
+
+    const boardService = new BoardService()
+
+    try {
+        const currentBoard = await boardService.clean(sessionId, input)
+
+        if (!currentBoard) {
+            res.status(HttpStatusCode.NOT_FOUND).json({"message": "There is no active game, please start one"})
+            return
+        }
+    
+        res.status(HttpStatusCode.OK).json(currentBoard)
+    }
+    catch (err) {
+        if (err instanceof InvalidUndoError
+            ) {
+            res.status(HttpStatusCode.BAD_REQUEST).json({"message": "It is not possible to clean this position"})
+        }
+        else {
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({err})
+        }
+    }
 })
 
 export default router;
