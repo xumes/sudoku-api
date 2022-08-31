@@ -23,58 +23,66 @@ describe('Board', () => {
     describe('Board.move', () => {
         it('Should throws InvalidEntryError when user inserts a number lower than one', () => {
             const board = makeBoard()
+            const starterBoard = board.start()
             const input = getFakeInput(-1)
 
-            expect(() => board.move(input)).toThrow(new InvalidEntryError)
+            expect(() => board.move(input, starterBoard)).toThrow(new InvalidEntryError)
         })
 
         it('Should throws InvalidEntryError when user inserts a number higher than nine', () => {
             const board = makeBoard()
+            const starterBoard = board.start()
             const input = getFakeInput(10)
 
-            expect(() => board.move(input)).toThrow(new InvalidEntryError)
+            expect(() => board.move(input, starterBoard)).toThrow(new InvalidEntryError)
         })
 
         it('Should throws InvalidSpotError when first number in the position is lower than zero', () => {
             const board = makeBoard()
+            const starterBoard = board.start()
             const input = getFakeInput(2, [-1, 2])
             
-            expect(() => board.move(input)).toThrow(new InvalidSpotError)
+            expect(() => board.move(input, starterBoard)).toThrow(new InvalidSpotError)
         })
 
         it('Should throws InvalidSpotError when first number in the position is higher than 8', () => {
             const board = makeBoard()
+            const starterBoard = board.start()
             const input = getFakeInput(2, [9, 2])
             
-            expect(() => board.move(input)).toThrow(new InvalidSpotError)
+            expect(() => board.move(input, starterBoard)).toThrow(new InvalidSpotError)
         })
 
         it('Should throws InvalidSpotError when second number in the position is lower than zero', () => {
             const board = makeBoard()
+            const starterBoard = board.start()
             const input = getFakeInput(2, [1, -1])
             
-            expect(() => board.move(input)).toThrow(new InvalidSpotError)
+            expect(() => board.move(input, starterBoard)).toThrow(new InvalidSpotError)
         })
 
         it('Should throws InvalidSpotError when second number in the position is higher than 8', () => {
             const board = makeBoard()
+            const starterBoard = board.start()
             const input = getFakeInput(2, [1, 9])
             
-            expect(() => board.move(input)).toThrow(new InvalidSpotError)
+            expect(() => board.move(input, starterBoard)).toThrow(new InvalidSpotError)
         })
 
         it('Should throws InvalidSpotError when position has only one value', () => {
             const board = makeBoard()
+            const starterBoard = board.start()
             const input = getFakeInput(2, [1])
             
-            expect(() => board.move(input)).toThrow(new InvalidSpotError)
+            expect(() => board.move(input, starterBoard)).toThrow(new InvalidSpotError)
         })
 
         it('Should throws InvalidSpotError when position has more than 2 values', () => {
             const board = makeBoard()
+            const starterBoard = board.start()
             const input = getFakeInput(2, [1, 2, 3])
             
-            expect(() => board.move(input)).toThrow(new InvalidSpotError)
+            expect(() => board.move(input, starterBoard)).toThrow(new InvalidSpotError)
         })
 
         it('Should throws DuplicatedValueError when the input already exists in a row', () => {
@@ -82,11 +90,11 @@ describe('Board', () => {
             const firstInput = getFakeInput(2, [1, 2])
             const input = getFakeInput(2, [1, 2])
 
-            board.start()
+            const starterBoard = board.start()
 
-            board.move(firstInput)
+            board.move(firstInput, starterBoard)
             
-            expect(() => board.move(input)).toThrow(new DuplicatedValueError)
+            expect(() => board.move(input, starterBoard)).toThrow(new DuplicatedValueError)
         })
 
         it('Should throws DuplicatedValueError when the input already exists in a row', () => {
@@ -94,11 +102,11 @@ describe('Board', () => {
             const firstInput = getFakeInput(2, [1, 2])
             const input = getFakeInput(2, [1, 4])
 
-            board.start()
+            const starterBoard = board.start()
 
-            board.move(firstInput)
+            board.move(firstInput, starterBoard)
             
-            expect(() => board.move(input)).toThrow(new DuplicatedValueError)
+            expect(() => board.move(input, starterBoard)).toThrow(new DuplicatedValueError)
         })
 
         it('Should throws DuplicatedValueError when the input already exists in a column', () => {
@@ -106,20 +114,20 @@ describe('Board', () => {
             const firstInput = getFakeInput(2, [5, 7])
             const input = getFakeInput(2, [1, 7])
 
-            board.start()
+            const starterBoard = board.start()
 
-            board.move(firstInput)
+            board.move(firstInput, starterBoard)
             
-            expect(() => board.move(input)).toThrow(new DuplicatedValueError)
+            expect(() => board.move(input, starterBoard)).toThrow(new DuplicatedValueError)
         })
 
         it('Should returns winner:false when there is still 0 in the board', () => {
             const board = makeBoard()
             const firstInput = getFakeInput(2, [5, 7])
 
-            board.start()
+            const starterBoard = board.start()
 
-            const currentBoard = board.move(firstInput)
+            const currentBoard = board.move(firstInput, starterBoard)
 
             expect(currentBoard.winner).toBe(false)
         })
@@ -138,10 +146,10 @@ describe('Board', () => {
             ]
 
             const board = makeBoard()
-            board.start(starterBoard)
+            const testBoard = board.start(starterBoard)
 
             const lastInput = getFakeInput(8, [8, 8])
-            const currentBoard = board.move(lastInput)
+            const currentBoard = board.move(lastInput, testBoard)
 
             const expectedBoard = [
                 [1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -163,13 +171,13 @@ describe('Board', () => {
     describe('Board.get', () => {
         it('Should return the current board after each move', () => {
             const board = makeBoard()
-            board.start()
+            const testBoard = board.start()
 
             const firstInput = getFakeInput(2, [0, 0])
             const secodnInput = getFakeInput(2, [8, 8])
 
-            board.move(firstInput)
-            board.move(secodnInput)
+            board.move(firstInput, testBoard)
+            board.move(secodnInput, testBoard)
 
             const currentBoard = board.get()
 
@@ -212,11 +220,11 @@ describe('Board', () => {
             ]
 
             const board = makeBoard()
-            board.start(starterBoard)
+            const testBoard = board.start(starterBoard)
 
             const lastInput = getFakeInput(8, [8, 8])
 
-            board.move(lastInput)
+            board.move(lastInput, testBoard)
 
             const currentBoard = board.get()
 
