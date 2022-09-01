@@ -55,3 +55,13 @@ npm run test:coverage
 - Remember to always check the **winner** key in the response and celebrate when it returns **_true_**
 
 See details on our Swagger documentation running the aplication and navigating to `/docs`
+
+## Future releases
+
+Features that can be implemented to keep the game growing:
+
+- The board accepts an initial setup, my idea was to create difficult levels, or allow user to start any configuration
+- To make this happen, I need to implement more validations on the starterBoard to ensure I don't allow an impossible (broken) game to start
+- Add more unit test to have more coverage
+- Allow users to identify themselves
+- Create a leaderboard with the number of moves of each user that completes the board
