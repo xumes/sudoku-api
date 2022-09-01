@@ -91,7 +91,7 @@ router.put('/move', async (req: Request, res: Response) => {
     const currentBoard = await boardService.undo(sessionId)
 
     if (!currentBoard) {
-        res.status(HttpStatusCode.NOT_FOUND).json({"message": "There is no active game, please start one"})
+        res.status(HttpStatusCode.NOT_FOUND).json({"message": "There is no move to undo"})
         return
     }
 
