@@ -30,7 +30,12 @@ When you see the message Server is running at port: 3000 the game is up and runn
 
 ## How to play
 
-- First start a new board
-- Place numbers into the board
+- First start a new board `POST /board`
+- Place numbers into the board `POST /board/move` sending the move in the board
+- You can undo a move if there is one to undo at `PUT /board/move`
+- Or you can clear any spot that has a valid number, at any time by sending the current value and position to `DELETE /board/move`
+- At any time, you can check your latest move at `GET /board/move`
+- Or you can check how is the board at `GET /board`
+- Remember to always check the **winner** key in the response and celebrate when it returns **_true_**
 
-See details on our Swagger documentation
+See details on our Swagger documentation running the aplication and navigating to `/docs`
