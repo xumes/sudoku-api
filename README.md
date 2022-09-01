@@ -4,15 +4,31 @@ A playable sudoku game RESTfull API
 
 ## Installation
 
+> Docker is required.
+
 ```console
 git clone git@github.com:xumes/sudoku-api.git
 
 cd sudoku-api
 
-docker compose up
+npm run dev
 ```
 
 When you see the message Server is running at port: 3000 the game is up and running
+
+## Unit Tests
+
+Run all test cases
+
+```console
+npm test
+```
+
+Run test coverage
+
+```console
+npm run test:coverage
+```
 
 ## Considerations
 
