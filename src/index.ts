@@ -1,7 +1,9 @@
 import express from "express"
 import session from "express-session"
+import swaggerUi from "swagger-ui-express"
 import { HttpStatusCode } from "./http/http-helper";
 import apiRoutes from "./routes"
+import swaggerDocs from "../docs/swagger.json"
 
 const port = (process.env.PORT || 3000)
 
@@ -12,6 +14,8 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
 }))
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
 app.get('/status', (req, res) => {
     const hc = {

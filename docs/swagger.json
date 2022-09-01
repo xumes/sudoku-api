@@ -1,0 +1,249 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Sudoku API",
+    "description": "Sudoku API, a playable sudoku game with the simplicity of an API",
+    "contact": {
+      "email": "reginaldo@xumes.ca"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development"
+    }
+  ],
+  "tags": [
+    {
+      "name": "game",
+      "description": "Sudoku game board activities"
+    },
+    {
+      "name": "health",
+      "description": "Api health check"
+    }
+  ],
+  "paths": {
+    "/board": {
+      "get": {
+        "tags": ["game"],
+        "summary": "get the current board",
+        "description": "Get the current board if there is an started board, or a message\n",
+        "responses": {
+          "200": {
+            "description": "current board and information if the user is a winner or not",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/gameBoard"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "There is no active game, please start one"
+          }
+        }
+      },
+      "post": {
+        "tags": ["game"],
+        "summary": "Start a new game",
+        "description": "Resets the board to start a new game",
+        "responses": {
+          "201": {
+            "description": "Game created"
+          }
+        }
+      }
+    },
+    "/board/move": {
+      "get": {
+        "tags": ["game"],
+        "summary": "get the latest player move",
+        "description": "Get the current player move\n",
+        "responses": {
+          "200": {
+            "description": "latest player move",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/gameInput"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "There is no latest move record"
+          }
+        }
+      },
+      "post": {
+        "tags": ["game"],
+        "summary": "Player set a value into a spot",
+        "description": "Player move a value into a spot and get the board record",
+        "requestBody": {
+          "description": "player move",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/gameInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Move registered"
+          }
+        }
+      },
+      "put": {
+        "tags": ["game"],
+        "summary": "Undo the last move",
+        "description": "Undo the last player move and return the game board\n",
+        "responses": {
+          "200": {
+            "description": "undo latest player move",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/gameInput"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "There is no move to undo"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["game"],
+        "summary": "Player clean a value from a specific spot",
+        "description": "Player can remove a value from any spot in the board",
+        "requestBody": {
+          "description": "spot to clean and its value for validation",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/gameInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Move registered"
+          }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "tags": ["health"],
+        "summary": "Check API status",
+        "description": "Get API status and uptime\n",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/status"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "gameBoard": {
+        "required": ["winner", "board"],
+        "type": "object",
+        "properties": {
+          "winner": {
+            "type": "boolean",
+            "format": "integer",
+            "example": false
+          },
+          "board": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": [
+                "000000000",
+                "000000000",
+                "000000000",
+                "000000000",
+                "000000000",
+                "000000000",
+                "000000000",
+                "000000000",
+                "000000000"
+              ]
+            }
+          }
+        },
+        "description": "current player board"
+      },
+      "gameInput": {
+        "required": ["spot", "value"],
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int",
+            "example": 2
+          },
+          "spot": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "example": [0, 5]
+          }
+        },
+        "description": "player move"
+      },
+      "status": {
+        "type": "object",
+        "properties": {
+          "uptime": {
+            "type": "integer",
+            "format": "int64",
+            "example": 376.876713628
+          },
+          "message": {
+            "type": "string",
+            "example": "OK"
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1661991786854
+          }
+        },
+        "description": "Api health check"
+      }
+    }
+  }
+}
